@@ -10,6 +10,12 @@ import re
 encoding = ['utf-8','gbk']
 
 
+class HtmlFile:
+    def __init__(self,bs_page,file_name):
+        self.bs_page = bs_page
+        self.file_name = file_name
+
+
 class HandlePages:
     def __init__(self,url_file=None,page_directory = None,url=None):
         self.page_list = []
@@ -24,7 +30,8 @@ class HandlePages:
         if page_directory:
             self.get_page_list_from_directory(page_directory)
         if url:
-            self.url_list = [url]
+            self.url_list = self.url_list if self.url_list else []
+            self.url_list.append(url)
             self.get_page_list()
 
     def get_page_list(self):
@@ -35,22 +42,22 @@ class HandlePages:
             if not coding:
                 coding = 'utf8'
             bs_page = BeautifulSoup(res.read().decode(coding), features="lxml")
-            self.page_list.append(bs_page)
+            hf = HtmlFile(bs_page,url)
+            self.page_list.append(hf)
         return self.page_list
 
-    def get_page_list_from_directory(self,dir):
-
-        files = os.listdir(dir)
+    def get_page_list_from_directory(self,dire):
+        files = os.listdir(dire)
         for file in files:
             if not os.path.isdir(file):
                 print(file)
                 try:
                     for code in encoding:
-                        bs_page = BeautifulSoup(open(dir + "/" + file,encoding=code),features='lxml')
+                        bs_page = BeautifulSoup(open(dire + "/" + file,encoding=code),features='lxml')
                         break
                 except ValueError as err:
                     print(err)
-                self.page_list.append(bs_page)
+                self.page_list.append(HtmlFile(bs_page,file))
 
     # def show_sensitive_word(self):
     #     s_word = "首页"
@@ -90,7 +97,8 @@ class HandlePages:
     # 返回页面的所有文本内容
     def get_sentence_list(self) -> list:
         sentence_list = []
-        for page in self.page_list:
+        for file in self.page_list:
+            page = file.bs_page
             texts = page.findAll(text=True)
             visible_texts = filter(self.tag_visible, texts)
             tmp_list = []
