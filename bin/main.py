@@ -3,7 +3,7 @@ from bin.divide_words import HandleSentence
 import os
 print(os.getcwd())
 
-pages = HandlePages(page_directory='/Users/qinzeyu/PycharmProjects/SensitiveWord/news_page')
+pages = HandlePages(page_directory='/Users/qinzeyu/PycharmProjects/SensitiveWord/test_page')
 # pages = HandlePages(url='http://cn.chinadaily.com.cn/a/202008/09/WS5f2f431ea310a859d09dcc84.html')
 page = pages.get_sentence_list()
 sensitive_words = []

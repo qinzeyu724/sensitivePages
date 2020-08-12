@@ -1,7 +1,12 @@
-import hanlp
+try:
+    import hanlp
+    tokenizer = hanlp.load('PKU_NAME_MERGED_SIX_MONTHS_CONVSEG')
+except ImportError:
+    hanlp = None
+    from pyhanlp import *
 
-tokenizer = hanlp.load('PKU_NAME_MERGED_SIX_MONTHS_CONVSEG')
-
+hanlp = None
+from pyhanlp import *
 
 class HandleSentence:
 
@@ -15,7 +20,10 @@ class HandleSentence:
 
     # 返回分词
     def divide_sentence(self):
-        return [tokenizer(sentence) for sentence in self.sentence_list]
+        if hanlp:
+            return [tokenizer(sentence) for sentence in self.sentence_list]
+        else:
+            return [[term.word for term in HanLP.segment(sentence)]for sentence in self.sentence_list]
 
     # 从文档中读取敏感词
     def get_sensitive_words_list_from_file(self, file, grade):
