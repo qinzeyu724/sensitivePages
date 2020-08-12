@@ -5,9 +5,6 @@ except ImportError:
     hanlp = None
     from pyhanlp import *
 
-hanlp = None
-from pyhanlp import *
-
 class HandleSentence:
 
     # 传入一个str的列表
